@@ -16,6 +16,8 @@ const getFormattedDate = createdAt => new Intl
   .DateTimeFormat('pr-br', { dateStyle: 'short', timeStyle: 'short' })
   .format(createdAt.toDate())
 
+const sanitize = string => DOMPurify.sanitize(string)
+
 const renderGamesList = querySnapshot => {
   if (!querySnapshot.metadata.hasPendingWrites) {
     gamesList.innerHTML = ''
@@ -28,12 +30,12 @@ const renderGamesList = querySnapshot => {
       liGame.setAttribute('class', 'my-4')
 
       const h5 = document.createElement('h5')
-      h5.textContent = title
+      h5.textContent = sanitize(title)
 
       const ul = document.createElement('ul')
 
       const liDevelopedBy = document.createElement('li')
-      liDevelopedBy.textContent = `Desenvolvido por ${developedBy}`
+      liDevelopedBy.textContent = `Desenvolvido por ${sanitize(developedBy)}`
 
       if (createdAt) {
         const liDate = document.createElement('li')
@@ -63,8 +65,8 @@ const addGame = async e => {
   e.preventDefault()
 
   const [error, doc] = await to(addDoc(collectionGames, {
-    title: e.target.title.value,
-    developedBy: e.target.developer.value,
+    title: sanitize(e.target.title.value),
+    developedBy: sanitize(e.target.developer.value),
     createdAt: serverTimestamp()
   }))
 

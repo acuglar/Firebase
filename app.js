@@ -41,7 +41,11 @@ formAddGame.addEventListener('submit', e => {
     developedBy: e.target.developer.value,
     createdAt: serverTimestamp()
   })
-    .then(doc => console.log('Document created with ID', doc.id))
+    .then(doc => {
+      console.log('Document created with ID', doc.id)
+      e.target.reset()
+      e.target.title.focus()
+    })
     .catch(console.log)
 })
 

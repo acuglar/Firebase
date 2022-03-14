@@ -10,30 +10,30 @@ const formAddGame = document.querySelector('[data-js="add-game-form"]')
 const gamesList = document.querySelector('[data-js="games-list"]')
 const buttonUnsub = document.querySelector('[data-js="unsub"]')
 
-const unsubscribe = onSnapshot(collectionGames, querySnapshot => {
-  if (!querySnapshot.metadata.hasPendingWrites) {
-    const gamesLis = querySnapshot.docs.reduce((acc, doc) => {
-      const { title, developedBy, createdAt } = doc.data()
+const getFormattedDate = createdAt => new Intl
+  .DateTimeFormat('pr-br', { dateStyle: 'short', timeStyle: 'short' })
+  .format(createdAt.toDate())
 
-      acc += `<li data-id="${doc.id}" class="my-4">
+const renderGamesList = querySnapshot => {
+  if (!querySnapshot.metadata.hasPendingWrites) {
+    gamesList.innerHTML = querySnapshot.docs.reduce((acc, doc) => {
+      const [id, { title, developedBy, createdAt }] = [doc.id, doc.data()]
+
+      return `${acc}<li data-id="${id}" class="my-4">
           <h5>${title}</h5>
   
           <ul>
             <li>Desenvolvido por ${developedBy}</li>
-            ${createdAt ? `<li>Adicionado ao banco em ${new Intl.DateTimeFormat('pr-br', { dateStyle: 'short', timeStyle: 'short' }).format(createdAt.toDate())}</li>` : ''}
+            ${createdAt ? `<li>Adicionado ao banco em ${getFormattedDate(createdAt)}</li>` : ''}
           </ul>
   
-          <button data-remove="${doc.id}" class="btn btn-danger btn-sm">Remover</button>
+          <button data-remove="${id}" class="btn btn-danger btn-sm">Remover</button>
         </li>`
-
-      return acc
     }, '')
-
-    gamesList.innerHTML = gamesLis
   }
-})
+}
 
-formAddGame.addEventListener('submit', e => {
+const addGame = e => {
   e.preventDefault()
 
   addDoc(collectionGames, {
@@ -47,9 +47,9 @@ formAddGame.addEventListener('submit', e => {
       e.target.title.focus()
     })
     .catch(console.log)
-})
+}
 
-gamesList.addEventListener('click', e => {
+const deleteGame = e => {
   const idRemoveButton = e.target.dataset.remove
   console.log(idRemoveButton);
 
@@ -58,6 +58,9 @@ gamesList.addEventListener('click', e => {
       .then(() => console.log('Game removido'))
       .catch(console.log)
   }
-})
+}
 
+const unsubscribe = onSnapshot(collectionGames, renderGamesList)
+gamesList.addEventListener('click', deleteGame)
+formAddGame.addEventListener('submit', addGame)
 buttonUnsub.addEventListener('click', unsubscribe)

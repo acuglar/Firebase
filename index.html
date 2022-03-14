@@ -11,24 +11,28 @@
 <body>
 
   <div class="container text-white my-5">
-  <h2>Games</h2>
+    <h2>Games</h2>
 
-  <ul data-js="games-list"></ul>
+    <ul data-js="games-list"></ul>
 
-  <form data-js="add-game-form">
-    <div class="mb-3">
-      <label for="title" class="form-label">Nome</label>
-      <input value="Elden Ring" class="form-control bg-transparent text-white" name="title" placeholder="Ex: Ghost of Tsushima" required autofocus>
+    <form data-js="add-game-form">
+      <div class="mb-3">
+        <label for="title" class="form-label">Nome</label>
+        <input value="Elden Ring" class="form-control bg-transparent text-white" name="title" placeholder="Ex: Ghost of Tsushima" required autofocus>
+      </div>
+
+      <div class="mb-3">
+        <label for="developer" class="form-label">Desenvolvedora</label>
+        <input value="test" class="form-control bg-transparent text-white" name="developer" placeholder="Ex: Capcom" required>
+      </div>
+
+      <button class="btn btn-primary">Adicionar game</button>
+    </form>
+
+    <div class="d-grid gap-2 mt-5">
+      <button data-js="unsub" class="btn btn-info btn-lg">Desabilitar listeners em tempo real</button>
     </div>
-
-    <div class="mb-3">
-      <label for="developer" class="form-label">Desenvolvedora</label>
-      <input value="test" class="form-control bg-transparent text-white" name="developer" placeholder="Ex: Capcom" required>
-    </div>
-
-    <button class="btn btn-primary">Adicionar game</button>
-  </form>
-
+  
   </div>
   
   <script src="firebaseConfig.js"></script>

@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js'
-import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js'
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js'
 
 // firebaseConfig = {
 //   apiKey,
@@ -14,11 +14,12 @@ import { getFirestore, collection, getDocs } from 'https://www.gstatic.com/fireb
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
-getDocs(collection(db, 'games'))
-  .then(querySnapshot => {
-    // querySnapshot.docs.forEach(doc => console.log(doc.data())). método builtin js
-    // querySnapshot.forEach(doc => console.log(doc.data())). método forEach do retorno de getDocs  
+const collectionGames = collection(db, 'games')
 
+const formAddGame = document.querySelector('[data-js="add-game-form"]')
+
+getDocs(collectionGames)
+  .then(querySnapshot => {
     const gamesLis = querySnapshot.docs.reduce((acc, doc) => {
       const { title, developedBy, createdAt } = doc.data()
       acc += `<li class="my-4">
@@ -36,4 +37,16 @@ getDocs(collection(db, 'games'))
     const gamesList = document.querySelector('[data-js="games-list"]')
     gamesList.innerHTML = gamesLis
   })
+  .catch(console.log)
 
+formAddGame.addEventListener('submit', e => {
+  e.preventDefault()
+
+  addDoc(collectionGames, {
+    title: e.target.title.value,
+    developedBy: e.target.developer.value,
+    createdAt: serverTimestamp()
+  })
+    .then(doc => console.log('Document created with ID', doc.id))
+    .catch(console.log)
+})

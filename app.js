@@ -35,25 +35,27 @@ const renderGamesList = querySnapshot => {
   }
 }
 
-const addGame = e => {
-  e.preventDefault()
-
-  addDoc(collectionGames, {
-    title: e.target.title.value,
-    developedBy: e.target.developer.value,
-    createdAt: serverTimestamp()
-  })
-    .then(doc => {
-      log('Document created with ID', doc.id)
-      e.target.reset()
-      e.target.title.focus()
-    })
-    .catch(log)
-}
-
 const to = promise => promise
   .then(result => [null, result])
   .catch(error => [error])
+
+const addGame = async e => {
+  e.preventDefault()
+
+  const [error, doc] = await to(addDoc(collectionGames, {
+    title: e.target.title.value,
+    developedBy: e.target.developer.value,
+    createdAt: serverTimestamp()
+  }))
+
+  if (error) {
+    return log(error)
+  }
+
+  log('Document created with ID', doc.id)
+  e.target.reset()
+  e.target.title.focus()
+}
 
 const deleteGame = async e => {
   const idRemoveButton = e.target.dataset.remove
@@ -62,12 +64,13 @@ const deleteGame = async e => {
     return
   }
 
-  try {
-    await deleteDoc(doc(db, 'games', idRemoveButton))
-    log('Game removido')
-  } catch (e) {
-    log(e)
+  const [error] = await to(deleteDoc(doc(db, 'games', idRemoveButton)))
+
+  if (error) {
+    return log(error)
   }
+
+  log('Game removido')
 }
 
 const handleSnapshotError = error => log(error)

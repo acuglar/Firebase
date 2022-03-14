@@ -20,7 +20,7 @@ const unsubscribe = onSnapshot(collectionGames, querySnapshot => {
   
           <ul>
             <li>Desenvolvido por ${developedBy}</li>
-            ${createdAt ? `<li>Adicionado ao banco em ${createdAt.toDate()}</li>` : ''}
+            ${createdAt ? `<li>Adicionado ao banco em ${new Intl.DateTimeFormat('pr-br', { dateStyle: 'short', timeStyle: 'short' }).format(createdAt.toDate())}</li>` : ''}
           </ul>
   
           <button data-remove="${doc.id}" class="btn btn-danger btn-sm">Remover</button>

@@ -18,20 +18,40 @@ const getFormattedDate = createdAt => new Intl
 
 const renderGamesList = querySnapshot => {
   if (!querySnapshot.metadata.hasPendingWrites) {
-    gamesList.innerHTML = querySnapshot.docs.reduce((acc, doc) => {
+    gamesList.innerHTML = ''
+
+    const games = querySnapshot.docs.map(doc => {
       const [id, { title, developedBy, createdAt }] = [doc.id, doc.data()]
 
-      return `${acc}<li data-id="${id}" class="my-4">
-          <h5>${title}</h5>
-  
-          <ul>
-            <li>Desenvolvido por ${developedBy}</li>
-            ${createdAt ? `<li>Adicionado ao banco em ${getFormattedDate(createdAt)}</li>` : ''}
-          </ul>
-  
-          <button data-remove="${id}" class="btn btn-danger btn-sm">Remover</button>
-        </li>`
-    }, '')
+      const liGame = document.createElement('li')
+      liGame.setAttribute('data-id', id)
+      liGame.setAttribute('class', 'my-4')
+
+      const h5 = document.createElement('h5')
+      h5.textContent = title
+
+      const ul = document.createElement('ul')
+
+      const liDevelopedBy = document.createElement('li')
+      liDevelopedBy.textContent = `Desenvolvido por ${developedBy}`
+
+      if (createdAt) {
+        const liDate = document.createElement('li')
+        liDate.textContent = `Adicionado ao banco em ${getFormattedDate(createdAt)}`
+        ul.append(liDate)
+      }
+
+      const button = document.createElement('button')
+      button.textContent = 'Remover'
+      button.setAttribute('data-remove', id)
+      button.setAttribute('class', 'btn btn-danger btn-sm')
+
+      ul.append(liDevelopedBy)
+      liGame.append(h5, ul, button)
+
+      return liGame
+    })
+    games.forEach(game => gamesList.append(game))
   }
 }
 

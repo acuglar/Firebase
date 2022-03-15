@@ -1,6 +1,10 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js'
 import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js'
 
+// firebaseConfig.json deve ser criado a partir de firebaseConfig.json.example com os dados de configuração do Firebase web app's
+const firebaseConfigPath = 'firebaseConfig.json'
+const firebaseConfig = await fetch(firebaseConfigPath).then(response => response.json())
+
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
